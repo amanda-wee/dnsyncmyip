@@ -10,11 +10,15 @@ Installation
 ```
 git clone git@github.com:amanda-wee/dnsyncmyip.git dnsyncmyip
 ```
-2. Create a file named .env in the directory where the script will be run, or possibly a parent directory thereof. Sample .env file content for test.example.com, where `randomtoken` is the DigitalOcean API token with write access:
+2. Create a configuration file named `.env` in the directory where the script will be run, or possibly a parent directory thereof. Sample configuration file where `randomtoken` is the DigitalOcean API token with write access:
 ```
+DNSYNCMYIP_DIGITALOCEAN_TOKEN=randomtoken
+```
+Optionally, the domain name and host name may be specified in the configuration file, e.g., for `test.example.com`:
+```
+DNSYNCMYIP_DIGITALOCEAN_TOKEN=randomtoken
 DNSYNCMYIP_DOMAIN_NAME=example.com
 DNSYNCMYIP_HOST_NAME=test
-DNSYNCMYIP_DIGITALOCEAN_TOKEN=randomtoken
 ```
 3. Install the Python requirements:
 ```
@@ -26,4 +30,8 @@ Usage
 Set the script to be run regularly, e.g., with a cronjob:
 ```
 0 * * * * python3 /path/to/dnsyncmyip.py
+```
+The domain name or host name may be provided as command line arguments, overriding the values in the configuration file:
+```
+0 * * * * python3 /path/to/dnsyncmyip.py --domain example.com --host test
 ```

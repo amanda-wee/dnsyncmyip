@@ -24,6 +24,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+import argparse
 import os
 import socket
 import sys
@@ -77,12 +78,34 @@ class SyncSession:
             self._domain_record_api.update(domain_record, actual_ip)
 
 
+def _create_command_line_arguments():
+    arg_parser = argparse.ArgumentParser(
+        description='Synchronise the actual (usually dynamic) IP address of '
+                    'the current host with its domain name A record'
+    )
+    arg_parser.add_argument('--domain',
+                            '-D',
+                            dest='domain_name',
+                            help='Domain name')
+    arg_parser.add_argument('--host',
+                            '-H',
+                            dest='host_name',
+                            help='Host name (format depends on DNS API)')
+    return arg_parser.parse_args()
+
+
 if __name__ == '__main__':
     load_dotenv()
 
     domain_name = os.getenv('DNSYNCMYIP_DOMAIN_NAME')
     host_name = os.getenv('DNSYNCMYIP_HOST_NAME')
     token = os.getenv('DNSYNCMYIP_DIGITALOCEAN_TOKEN')
+
+    args = _create_command_line_arguments()
+    if args.domain_name:
+        domain_name = args.domain_name
+    if args.host_name:
+        host_name = args.host_name
 
     try:
         domain_record_api = DomainRecordApi.get_api(DOMAIN_RECORD_API,
