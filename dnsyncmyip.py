@@ -3,13 +3,6 @@ Python 3 utility and classes for synchronising the actual IP address of the
 current host with its domain name A record.
 Currently only supports DigitalOcean DNS API.
 
-Configuration:
-Create a file named .env in the current directory or a parent thereof.
-Sample .env file content:
-DNSYNCMYIP_DOMAIN_NAME=example.com
-DNSYNCMYIP_HOST_NAME=test
-DNSYNCMYIP_DIGITALOCEAN_TOKEN=randomtoken
-
 Idea of using resolver1.opendns.com and myip.opendns.com taken from Krinkle:
 https://unix.stackexchange.com/questions/22615
 Code for using dnspython adapted from koblas:
