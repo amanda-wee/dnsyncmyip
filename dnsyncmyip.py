@@ -34,8 +34,7 @@ from dotenv import load_dotenv
 
 from domain_record_apis import DomainRecordApi, DomainRecordError
 
-
-DOMAIN_RECORD_API = 'digitalocean'
+DEFAULT_DOMAIN_RECORD_API = 'digitalocean'
 
 
 class SyncError(Exception):
@@ -83,6 +82,13 @@ def _create_command_line_arguments():
         description='Synchronise the actual (usually dynamic) IP address of '
                     'the current host with its domain name A record'
     )
+    arg_parser.add_argument('--api',
+                            '-A',
+                            dest='domain_record_api',
+                            default=DEFAULT_DOMAIN_RECORD_API,
+                            help='Domain record API (default: {})'.format(
+                                DEFAULT_DOMAIN_RECORD_API
+                            ))
     arg_parser.add_argument('--domain',
                             '-D',
                             dest='domain_name',
@@ -94,12 +100,20 @@ def _create_command_line_arguments():
     return arg_parser.parse_args()
 
 
+def _get_domain_record_api_kwargs(api_label):
+    return {
+        'digitalocean': lambda: {
+            'domain_name': domain_name,
+            'token': os.getenv('DNSYNCMYIP_DIGITALOCEAN_TOKEN'),
+        },
+    }[api_label]()
+
+
 if __name__ == '__main__':
     load_dotenv()
 
     domain_name = os.getenv('DNSYNCMYIP_DOMAIN_NAME')
     host_name = os.getenv('DNSYNCMYIP_HOST_NAME')
-    token = os.getenv('DNSYNCMYIP_DIGITALOCEAN_TOKEN')
 
     args = _create_command_line_arguments()
     if args.domain_name:
@@ -107,11 +121,18 @@ if __name__ == '__main__':
     if args.host_name:
         host_name = args.host_name
 
+    api_label = args.domain_record_api
     try:
-        domain_record_api = DomainRecordApi.get_api(DOMAIN_RECORD_API,
-                                                    domain_name,
-                                                    token)
+        api_kwargs = _get_domain_record_api_kwargs(api_label)
+    except KeyError:
+        print('Error: unknown domain record API "{}"'.format(api_label),
+              file=sys.stderr)
+        sys.exit(1)
+
+    try:
+        domain_record_api = DomainRecordApi.get_api(api_label, **api_kwargs)
         sync_session = SyncSession(domain_name, host_name, domain_record_api)
         sync_session.sync_my_ip_with_dns()
     except (DomainRecordError, SyncError) as e:
         print(e.message, file=sys.stderr)
+        sys.exit(1)
