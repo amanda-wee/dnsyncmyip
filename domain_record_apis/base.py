@@ -45,6 +45,10 @@ class DomainRecordApi:
 
     @classmethod
     def get_api_labels(cls):
+        """
+        Returns iterable of strings corresponding to the available
+        DomainRecordApi subclass labels.
+        """
         return cls._api_classes.keys()
 
     @classmethod
