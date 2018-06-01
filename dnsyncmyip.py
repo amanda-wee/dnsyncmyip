@@ -30,10 +30,9 @@ from sync_session import SyncSession, SyncError
 DEFAULT_DOMAIN_RECORD_API = 'digitalocean'
 
 
-def create_command_line_arguments():
+def parse_command_line_arguments():
     """
-    Creates the command line argument handling. Returns the parsed command line
-    arguments.
+    Parses the command line arguments and returns them.
     """
     arg_parser = argparse.ArgumentParser(
         description='Synchronise the actual (usually dynamic) IP address of '
@@ -80,7 +79,7 @@ def main():
     domain_name = os.getenv('DNSYNCMYIP_DOMAIN_NAME')
     host_name = os.getenv('DNSYNCMYIP_HOST_NAME')
 
-    args = create_command_line_arguments()
+    args = parse_command_line_arguments()
     if args.domain_name:
         domain_name = args.domain_name
     if args.host_name:
