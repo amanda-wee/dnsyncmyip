@@ -86,8 +86,9 @@ def _create_command_line_arguments():
                             '-A',
                             dest='domain_record_api',
                             default=DEFAULT_DOMAIN_RECORD_API,
-                            help='Domain record API (default: {})'.format(
-                                DEFAULT_DOMAIN_RECORD_API
+                            help="Domain record API (default: {}) [{}]".format(
+                                DEFAULT_DOMAIN_RECORD_API,
+                                ' | '.join(DomainRecordApi.get_api_labels())
                             ))
     arg_parser.add_argument('--domain',
                             '-D',

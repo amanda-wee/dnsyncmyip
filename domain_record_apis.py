@@ -46,6 +46,10 @@ class DomainRecordApi:
                                     '"{}" does not exist'.format(api_label))
 
     @classmethod
+    def get_api_labels(cls):
+        return cls._api_classes.keys()
+
+    @classmethod
     def register(cls, api_label):
         """
         Returns a class decorator to decorate a class as being a
