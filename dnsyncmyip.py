@@ -31,6 +31,10 @@ DEFAULT_DOMAIN_RECORD_API = 'digitalocean'
 
 
 def create_command_line_arguments():
+    """
+    Creates the command line argument handling. Returns the parsed command line
+    arguments.
+    """
     arg_parser = argparse.ArgumentParser(
         description='Synchronise the actual (usually dynamic) IP address of '
                     'the current host with its domain name A record'
@@ -56,6 +60,10 @@ def create_command_line_arguments():
 
 
 def get_domain_record_api_kwargs(api_label, domain_name):
+    """
+    Returns the keyword arguments to initialise the domain name record API with
+    the given api_label.
+    """
     return {
         'digitalocean': lambda: {
             'domain_name': domain_name,

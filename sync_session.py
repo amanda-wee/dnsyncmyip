@@ -37,6 +37,10 @@ class SyncError(Exception):
 
 
 class SyncSession:
+    """
+    Models a synchronisation session to synchronise the actual IP address of
+    the current host ("my IP" address) with its domain name A record.
+    """
     DNS_RESOLVER_SERVER = 'resolver1.opendns.com'
     SELF_IP_HOST_NAME = 'myip.opendns.com'
 
@@ -54,12 +58,20 @@ class SyncSession:
         self._domain_record_api = domain_record_api
 
     def find_my_ip(self):
+        """
+        Returns the actual IP address of the current host, or None if the
+        resolver does not provide such an IP address.
+        """
         resolver = dns.resolver.Resolver()
         resolver.nameservers = [socket.gethostbyname(self.DNS_RESOLVER_SERVER)]
         results = resolver.query(self.SELF_IP_HOST_NAME, 'A')
         return results[0].address if results else None
 
     def sync_my_ip_with_dns(self):
+        """
+        Synchronises the actual IP address of the current host with its domain
+        name A record. Returns None.
+        """
         actual_ip = self.find_my_ip()
         if actual_ip is None:
             raise SyncError('could not determine actual IP address')
