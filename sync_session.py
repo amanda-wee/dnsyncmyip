@@ -29,6 +29,10 @@ import dns.resolver
 
 
 class SyncError(Exception):
+    """
+    Exception to be raised on failure to synchronise the actual IP address of
+    the current host with its domain name A record.
+    """
     def __init__(self, message):
         self.message = message
 

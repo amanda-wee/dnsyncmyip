@@ -73,6 +73,10 @@ def get_domain_record_api_kwargs(api_label, domain_name):
 
 
 def main():
+    """
+    Synchronises the actual IP address of the current host with its domain name
+    A record.
+    """
     domain_name = os.getenv('DNSYNCMYIP_DOMAIN_NAME')
     host_name = os.getenv('DNSYNCMYIP_HOST_NAME')
 

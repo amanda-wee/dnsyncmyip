@@ -20,6 +20,10 @@ limitations under the License.
 
 
 class DomainRecordError(Exception):
+    """
+    Exception to be raised on domain record API errors detected by
+    DomainRecordApi or its subclasses.
+    """
     def __init__(self, message):
         self.message = message
 
