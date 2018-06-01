@@ -62,12 +62,11 @@ class DigitalOceanDomainRecordApi(DomainRecordApi):
     """
     def __init__(self, domain_name, token):
         if not domain_name:
-            raise DomainRecordError('Error: domain name not specified')
+            raise DomainRecordError('domain name not specified')
         self._domain_name = domain_name
 
         if not token:
-            raise DomainRecordError('Error: DigitalOcean API token not '
-                                    'specified')
+            raise DomainRecordError('DigitalOcean API token not specified')
         self._api = DigitalOceanApi(token)
 
     def create(self, host_name, actual_ip):
@@ -75,16 +74,14 @@ class DigitalOceanDomainRecordApi(DomainRecordApi):
         json_data = {'type': 'A', 'name': host_name, 'data': actual_ip}
         response = self._api.post(path, json_data)
         if not response.ok:
-            raise DomainRecordError('Error: could not create domain record')
+            raise DomainRecordError('could not create domain record')
 
     def find(self, host_name):
         path = 'domains/{}/records?per_page=100'.format(self._domain_name)
         response = self._api.get(path)
         while True:
             if not response.ok:
-                raise DomainRecordError(
-                    'Error: failure when finding domain record'
-                )
+                raise DomainRecordError('failure when finding domain record')
 
             result = response.json()
             for domain_record in result['domain_records']:
@@ -104,4 +101,4 @@ class DigitalOceanDomainRecordApi(DomainRecordApi):
         json_data = {'data': actual_ip}
         response = self._api.put(path, json_data)
         if not response.ok:
-            raise DomainRecordError('Error: could not update domain record')
+            raise DomainRecordError('could not update domain record')

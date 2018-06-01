@@ -41,6 +41,9 @@ class SyncError(Exception):
     def __init__(self, message):
         self.message = message
 
+    def __str__(self):
+        return 'Error: ' + self.message
+
 
 class SyncSession:
     DNS_RESOLVER_SERVER = 'resolver1.opendns.com'
@@ -48,15 +51,15 @@ class SyncSession:
 
     def __init__(self, domain_name, host_name, domain_record_api):
         if not domain_name:
-            raise SyncError('Error: domain name not specified')
+            raise SyncError('domain name not specified')
         self._domain_name = domain_name
 
         if not host_name:
-            raise SyncError('Error: host name not specified')
+            raise SyncError('host name not specified')
         self._host_name = host_name
 
         if not domain_record_api:
-            raise SyncError('Error: domain record API not specified')
+            raise SyncError('domain record API not specified')
         self._domain_record_api = domain_record_api
 
     def find_my_ip(self):
@@ -68,7 +71,7 @@ class SyncSession:
     def sync_my_ip_with_dns(self):
         actual_ip = self.find_my_ip()
         if actual_ip is None:
-            raise SyncError('Error: could not determine actual IP address')
+            raise SyncError('could not determine actual IP address')
 
         domain_record = self._domain_record_api.find(self._host_name)
         if domain_record is None:
@@ -82,14 +85,15 @@ def _create_command_line_arguments():
         description='Synchronise the actual (usually dynamic) IP address of '
                     'the current host with its domain name A record'
     )
+    api_help = 'Domain record API (default: {}) [{}]'.format(
+        DEFAULT_DOMAIN_RECORD_API,
+        ' | '.join(DomainRecordApi.get_api_labels())
+    )
     arg_parser.add_argument('--api',
                             '-A',
                             dest='domain_record_api',
                             default=DEFAULT_DOMAIN_RECORD_API,
-                            help="Domain record API (default: {}) [{}]".format(
-                                DEFAULT_DOMAIN_RECORD_API,
-                                ' | '.join(DomainRecordApi.get_api_labels())
-                            ))
+                            help=api_help)
     arg_parser.add_argument('--domain',
                             '-D',
                             dest='domain_name',
@@ -101,7 +105,7 @@ def _create_command_line_arguments():
     return arg_parser.parse_args()
 
 
-def _get_domain_record_api_kwargs(api_label):
+def _get_domain_record_api_kwargs(api_label, domain_name):
     return {
         'digitalocean': lambda: {
             'domain_name': domain_name,
@@ -110,9 +114,7 @@ def _get_domain_record_api_kwargs(api_label):
     }[api_label]()
 
 
-if __name__ == '__main__':
-    load_dotenv()
-
+def _main():
     domain_name = os.getenv('DNSYNCMYIP_DOMAIN_NAME')
     host_name = os.getenv('DNSYNCMYIP_HOST_NAME')
 
@@ -124,16 +126,20 @@ if __name__ == '__main__':
 
     api_label = args.domain_record_api
     try:
-        api_kwargs = _get_domain_record_api_kwargs(api_label)
+        api_kwargs = _get_domain_record_api_kwargs(api_label, domain_name)
     except KeyError:
-        print('Error: unknown domain record API "{}"'.format(api_label),
-              file=sys.stderr)
-        sys.exit(1)
+        raise SyncError('unknown domain record API "{}"'.format(api_label))
+
+    domain_record_api = DomainRecordApi.get_api(api_label, **api_kwargs)
+    sync_session = SyncSession(domain_name, host_name, domain_record_api)
+    sync_session.sync_my_ip_with_dns()
+
+
+if __name__ == '__main__':
+    load_dotenv()
 
     try:
-        domain_record_api = DomainRecordApi.get_api(api_label, **api_kwargs)
-        sync_session = SyncSession(domain_name, host_name, domain_record_api)
-        sync_session.sync_my_ip_with_dns()
+        _main()
     except (DomainRecordError, SyncError) as e:
-        print(e.message, file=sys.stderr)
+        print(e, file=sys.stderr)
         sys.exit(1)

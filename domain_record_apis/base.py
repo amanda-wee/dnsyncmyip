@@ -23,6 +23,9 @@ class DomainRecordError(Exception):
     def __init__(self, message):
         self.message = message
 
+    def __str__(self):
+        return 'Error: ' + self.message
+
 
 class DomainRecordApi:
     """
@@ -40,8 +43,8 @@ class DomainRecordApi:
         try:
             return cls._api_classes[api_label](*args, **kwargs)
         except KeyError:
-            raise DomainRecordError('Error: domain record API with the label '
-                                    '"{}" does not exist'.format(api_label))
+            raise DomainRecordError('domain record API with the label "{}" '
+                                    'does not exist'.format(api_label))
 
     @classmethod
     def get_api_labels(cls):
