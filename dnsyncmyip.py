@@ -102,5 +102,4 @@ if __name__ == '__main__':
     try:
         main()
     except (DomainRecordError, SyncError) as e:
-        print(e, file=sys.stderr)
-        sys.exit(1)
+        sys.exit(e)
