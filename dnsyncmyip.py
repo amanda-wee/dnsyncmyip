@@ -92,8 +92,8 @@ def main():
         raise SyncError('unknown domain record API "{}"'.format(api_label))
 
     domain_record_api = DomainRecordApi.get_api(api_label, **api_kwargs)
-    sync_session = SyncSession(domain_name, host_name, domain_record_api)
-    sync_session.sync_my_ip_with_dns()
+    sync_session = SyncSession(domain_record_api)
+    sync_session.sync_my_ip_with_dns(host_name)
 
 
 if __name__ == '__main__':
