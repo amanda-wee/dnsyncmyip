@@ -22,8 +22,6 @@ import argparse
 import os
 import sys
 
-from dotenv import load_dotenv
-
 from domain_record_apis import DomainRecordApi, DomainRecordError
 from sync_session import SyncSession, SyncError
 
@@ -97,7 +95,11 @@ def main():
 
 
 if __name__ == '__main__':
-    load_dotenv()
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+    except ImportError:
+        pass
 
     try:
         main()

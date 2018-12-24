@@ -10,19 +10,23 @@ Installation
 ```
 git clone git@github.com:amanda-wee/dnsyncmyip.git dnsyncmyip
 ```
-2. Create a configuration file named `.env` in the directory where the script will be run, or possibly a parent directory thereof. Sample configuration file where `randomtoken` is the DigitalOcean API token with write access:
+2. Install the Python requirements:
 ```
-DNSYNCMYIP_DIGITALOCEAN_TOKEN=randomtoken
+pip3 install -r requirements.txt
 ```
-Optionally, the domain name and host name may be specified in the configuration file, e.g., for `test.example.com`:
+3. Set the environment variables by creating a configuration file named `.env` in the directory where the script will be run, or possibly a parent directory thereof. Sample configuration file where `randomtoken` is the DigitalOcean API token with write access for `test.example.com`:
 ```
 DNSYNCMYIP_DIGITALOCEAN_TOKEN=randomtoken
 DNSYNCMYIP_DOMAIN_NAME=example.com
 DNSYNCMYIP_HOST_NAME=test
 ```
-3. Install the Python requirements:
+The domain name and host name are optional as they can be supplied as command line arguments. To use this configuration file, install python-dotenv:
 ```
-pip3 install -r requirements.txt
+pip3 install python-dotenv
+```
+Or if using Docker, use the --env-file option:
+```
+docker run --rm --env-file /path/to/.env dnsyncmyip
 ```
 
 Usage
@@ -34,4 +38,8 @@ Set the script to be run regularly, e.g., with a cronjob:
 The domain name or host name may be provided as command line arguments, overriding the values in the configuration file:
 ```
 0 * * * * python3 /path/to/dnsyncmyip.py --domain example.com --host test
+```
+If using Docker:
+```
+0 * * * * docker run --rm --env-file /path/to/.env dnsyncmyip
 ```
