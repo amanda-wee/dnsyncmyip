@@ -23,6 +23,10 @@ For running the script in a Docker container:
 docker pull aranel/dnsyncmyip
 ```
 
+For running the script in a Docker container on a Synology NAS:
+1. Install the Docker package.
+2. From Registry find and download aranel/dnsyncmyip
+
 Configuration
 -------------
 Set the environment variables by creating a configuration file named `.env` in the directory where the script will be run, or possibly a parent directory thereof. Sample configuration file where `randomtoken` is the DigitalOcean API token with write access for `test.example.com`:
@@ -33,17 +37,26 @@ DNSYNCMYIP_HOST_NAME=test
 ```
 The domain name and host name are optional as they can be supplied as command line arguments.
 
+For running the script in a Docker container on a Synology NAS:
+1. Create a `dnsyncmyip` subfolder in the user's home folder. The folder permissions should be changed to ensure that no other users have access to it.
+2. Upload the `.env` file to this dnsyncmyip subfolder.
+
 Usage
 -----
-Set the script to be run regularly, e.g., with a cronjob:
+* Set the script to be run regularly, e.g., with a cronjob:
 ```
 0 * * * * python3 /path/to/dnsyncmyip.py
 ```
-The domain name or host name may be provided as command line arguments, overriding the values in the configuration file:
+* The domain name or host name may be provided as command line arguments, overriding the values in the configuration file:
 ```
 0 * * * * python3 /path/to/dnsyncmyip.py --domain example.com --host test
 ```
-For running the script in a Docker container, use the Docker host's version of cron:
+* For running the script in a Docker container, use the Docker host's version of cron:
 ```
 0 * * * * docker run --rm --env-file /path/to/.env aranel/dnsyncmyip
 ```
+* For running the script in a Docker container on a Synology NAS, use the Task Scheduler with a user-defined script owned by root:
+```
+docker run --rm --env-file /var/services/homes/username/dnsyncmyip/.env aranel/dnsyncmyip
+```
+where `username` is to be replaced by the username of the user.
