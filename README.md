@@ -55,8 +55,7 @@ Usage
 ```
 0 * * * * docker run --rm --env-file /path/to/.env aranel/dnsyncmyip
 ```
-* For running the script in a Docker container on a Synology NAS, use the Task Scheduler with a user-defined script owned by root:
+* For running the script in a Docker container on a Synology NAS, use the Task Scheduler with a user-defined script owned by root, replacing `username` with the username of the user:
 ```
 docker run --rm --env-file /var/services/homes/username/dnsyncmyip/.env aranel/dnsyncmyip
 ```
-where `username` is to be replaced by the username of the user.
