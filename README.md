@@ -25,7 +25,7 @@ docker pull aranel/dnsyncmyip
 
 For running the script in a Docker container on a Synology NAS:
 1. Install the Docker package.
-2. From Registry find and download aranel/dnsyncmyip
+2. From the Docker package's Registry, find and download `aranel/dnsyncmyip`
 
 Configuration
 -------------
@@ -39,7 +39,7 @@ The domain name and host name are optional as they can be supplied as command li
 
 For running the script in a Docker container on a Synology NAS:
 1. Create a `dnsyncmyip` subfolder in the user's home folder. The folder permissions should be changed to ensure that no other users have access to it.
-2. Upload the `.env` file to this dnsyncmyip subfolder.
+2. Upload the `.env` file to this `dnsyncmyip` subfolder.
 
 Usage
 -----
