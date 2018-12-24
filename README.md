@@ -6,6 +6,7 @@ Presently, it only supports the DigitalOcean DNS API.
 
 Installation
 ------------
+For running the script directly:
 1. Clone this repository, e.g.:
 ```
 git clone git@github.com:amanda-wee/dnsyncmyip.git dnsyncmyip
@@ -13,21 +14,24 @@ git clone git@github.com:amanda-wee/dnsyncmyip.git dnsyncmyip
 2. Install the Python requirements:
 ```
 pip3 install -r requirements.txt
+pip3 install python-dotenv
 ```
-3. Set the environment variables by creating a configuration file named `.env` in the directory where the script will be run, or possibly a parent directory thereof. Sample configuration file where `randomtoken` is the DigitalOcean API token with write access for `test.example.com`:
+
+For running the script in a Docker container:
+1. Pull from Docker Hub:
+```
+docker pull aranel/dnsyncmyip
+```
+
+Configuration
+-------------
+Set the environment variables by creating a configuration file named `.env` in the directory where the script will be run, or possibly a parent directory thereof. Sample configuration file where `randomtoken` is the DigitalOcean API token with write access for `test.example.com`:
 ```
 DNSYNCMYIP_DIGITALOCEAN_TOKEN=randomtoken
 DNSYNCMYIP_DOMAIN_NAME=example.com
 DNSYNCMYIP_HOST_NAME=test
 ```
-The domain name and host name are optional as they can be supplied as command line arguments. To use this configuration file, install python-dotenv:
-```
-pip3 install python-dotenv
-```
-Or if using Docker, use the --env-file option:
-```
-docker run --rm --env-file /path/to/.env dnsyncmyip
-```
+The domain name and host name are optional as they can be supplied as command line arguments.
 
 Usage
 -----
@@ -39,7 +43,7 @@ The domain name or host name may be provided as command line arguments, overridi
 ```
 0 * * * * python3 /path/to/dnsyncmyip.py --domain example.com --host test
 ```
-If using Docker:
+For running the script in a Docker container, use the Docker host's version of cron:
 ```
-0 * * * * docker run --rm --env-file /path/to/.env dnsyncmyip
+0 * * * * docker run --rm --env-file /path/to/.env aranel/dnsyncmyip
 ```
