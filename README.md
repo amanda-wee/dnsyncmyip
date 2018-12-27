@@ -9,7 +9,7 @@ Installation
 For running the script directly:
 1. Clone this repository, e.g.:
 ```
-git clone git@github.com:amanda-wee/dnsyncmyip.git dnsyncmyip
+git clone https://github.com/amanda-wee/dnsyncmyip.git dnsyncmyip
 ```
 2. Install the Python requirements:
 ```
